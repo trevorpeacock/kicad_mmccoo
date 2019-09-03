@@ -545,7 +545,8 @@ def traverse_graphics(board, layer, actions,
                 prevpt = pt
 
         elif (d.GetShape() == pcbnew.S_POLYGON):
-            pts = [pcbpoint.pcbpoint(p) for p in d.GetPolyPoints()]
+            pts = [d.GetPolyShape().Outline(0).Point(x) for x in range(d.GetPolyShape().Outline(0).PointCount())]
+            pts = [pcbpoint.pcbpoint(pcbnew.wxPoint(p.x, p.y)) for p in pts]
             actions.poly_action(pts)
 
     if (not merge_polys):

@@ -57,6 +57,7 @@ def PlaceBySch():
         str(trans_p.match(tM90).groups()): -90,
         str(trans_p.match(t90).groups()): 90
     }
+    print(orientations)
 
     def parse_eeschema(filename):
         retval = {}
@@ -71,6 +72,7 @@ def PlaceBySch():
                 ec = endcomp_p.match(line)
                 l = comp_label_p.match(line)
                 t = trans_p.match(line)
+                print(line)
                 fp = footprint_p.match(line)
                 if (bc):
                     incomp = True
@@ -91,7 +93,8 @@ def PlaceBySch():
                     curcomp = l.groups()[1];
                     #print("l {} {}".format(l.groups()[0], l.groups()[1]))
                 elif (t):
-                    orient = orientations[str(t.groups())]
+                    s = str(t.groups())
+                    orient = orientations[s] if s in orientations else 0
                     #print("orient {}".format(orient))
                 elif (fp):
                     x = int(fp.groups()[1])
