@@ -1,14 +1,10 @@
 
+import bulge
 import dxfgrabber
 import numpy as np
-import sys, os.path, inspect
-import re
 import pcbnew
-import bulge
 import pcbpoint
-
 from sets import Set
-import pdb
 
 # how close together to points need to be to each other to be considered
 # connected?
@@ -252,6 +248,18 @@ class orient_actions(graphic_actions):
                 angle = angle - 180.0
             mod.SetOrientation(angle*10)
             mod.SetPosition(center_for_polygon(points).wxpoint())
+
+    def circle_action(self, center, radius):
+        center = pcbpoint.pcbpoint(pcbnew.wxPoint(*center))
+        for mod in self.board.GetModules():
+            modname = mod.GetReference()
+            if (modname not in self.modnames):
+                continue
+            pos = pcbpoint.pcbpoint(mod.GetPosition())
+            distance = ((pos.x - center.x) ** 2 + (pos.y - center.y) ** 2) ** 0.5 / pcbpoint.pcbpoint.SCALE
+            if distance > radius:
+                continue
+            mod.SetPosition(center.wxpoint())
 
 class myarc:
     def __init__(self, center, radius, start_angle, end_angle):
