@@ -56,6 +56,9 @@ class pcbpoint:
     def __add__(self, other):
         return pcbpoint(self.x+other.x, self.y+other.y, noscale=True)
 
+    def __sub__(self, other):
+        return pcbpoint(self.x-other.x, self.y-other.y, noscale=True)
+
     def __repr__(self):
         return "({},{})".format(self.x/self.SCALE, self.y/self.SCALE)
 

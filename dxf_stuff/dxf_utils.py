@@ -231,6 +231,12 @@ class orient_actions(graphic_actions):
 
     # I only care about poly because I want directionality (which a cirle doesn't have)
     # and I want to check for enclosing (which doesn't make sense for line, arc
+    def get_mod_courtyard_centre(self, mod):
+        p = mod.GetPolyCourtyardFront().Centre().getWxPoint()
+        if p.x == p.y == 0:
+            p = mod.GetPolyCourtyardBack().Centre().getWxPoint()
+        return pcbpoint.pcbpoint(p)
+
     def poly_action(self, points):
         for mod in self.board.GetModules():
             #modname = mod.GetFPID().GetLibItemName().c_str()
@@ -239,7 +245,8 @@ class orient_actions(graphic_actions):
             modname = mod.GetReference()
             if (modname not in self.modnames):
                 continue
-            pos = pcbpoint.pcbpoint(mod.GetPosition())
+            mod.BuildPolyCourtyard()
+            pos = self.get_mod_courtyard_centre(mod)
             inside = point_inside_polygon(pos.x, pos.y, points)
             if (not inside):
                 continue
@@ -247,7 +254,9 @@ class orient_actions(graphic_actions):
             if (angle>0):
                 angle = angle - 180.0
             mod.SetOrientation(angle*10)
-            mod.SetPosition(center_for_polygon(points).wxpoint())
+            mod.BuildPolyCourtyard()
+            offset = pcbpoint.pcbpoint(mod.GetPosition()) - self.get_mod_courtyard_centre(mod)
+            mod.SetPosition((center_for_polygon(points)+offset).wxpoint())
 
     def circle_action(self, center, radius):
         center = pcbpoint.pcbpoint(pcbnew.wxPoint(*center))
@@ -255,11 +264,13 @@ class orient_actions(graphic_actions):
             modname = mod.GetReference()
             if (modname not in self.modnames):
                 continue
-            pos = pcbpoint.pcbpoint(mod.GetPosition())
+            mod.BuildPolyCourtyard()
+            pos = self.get_mod_courtyard_centre(mod)
             distance = ((pos.x - center.x) ** 2 + (pos.y - center.y) ** 2) ** 0.5 / pcbpoint.pcbpoint.SCALE
             if distance > radius:
                 continue
-            mod.SetPosition(center.wxpoint())
+            offset = pcbpoint.pcbpoint(mod.GetPosition()) - pos
+            mod.SetPosition((center+offset).wxpoint())
 
 class myarc:
     def __init__(self, center, radius, start_angle, end_angle):
