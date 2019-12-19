@@ -232,9 +232,11 @@ class orient_actions(graphic_actions):
     # I only care about poly because I want directionality (which a cirle doesn't have)
     # and I want to check for enclosing (which doesn't make sense for line, arc
     def get_mod_courtyard_centre(self, mod):
-        p = mod.GetPolyCourtyardFront().Centre().getWxPoint()
-        if p.x == p.y == 0:
+        p = mod.GetPosition()
+        if mod.GetPolyCourtyardBack().OutlineCount():
             p = mod.GetPolyCourtyardBack().Centre().getWxPoint()
+        if mod.GetPolyCourtyardFront().OutlineCount():
+            p = mod.GetPolyCourtyardFront().Centre().getWxPoint()
         return pcbpoint.pcbpoint(p)
 
     def poly_action(self, points):
@@ -250,11 +252,20 @@ class orient_actions(graphic_actions):
             inside = point_inside_polygon(pos.x, pos.y, points)
             if (not inside):
                 continue
-            angle = longest_angle_for_polygon(points)
-            if (angle>0):
-                angle = angle - 180.0
-            mod.SetOrientation(angle*10)
-            mod.BuildPolyCourtyard()
+            courtyard_points = []
+            if mod.GetPolyCourtyardFront().OutlineCount():
+                courtyard_points = [mod.GetPolyCourtyardFront().Outline(0).Point(x) for x in
+                                    range(mod.GetPolyCourtyardFront().Outline(0).PointCount())]
+            if mod.GetPolyCourtyardBack().OutlineCount():
+                courtyard_points = [mod.GetPolyCourtyardBack().Outline(0).Point(x) for x in
+                                    range(mod.GetPolyCourtyardBack().Outline(0).PointCount())]
+            if courtyard_points:
+                courtyard_points = [pcbpoint.pcbpoint(pcbnew.wxPoint(p.x, p.y)) for p in courtyard_points]
+                angle = longest_angle_for_polygon(points) - longest_angle_for_polygon(courtyard_points)
+                angle = (angle + 360) % 180
+                if angle != 0:
+                    mod.SetOrientation(mod.GetOrientation() + angle*10)
+                mod.BuildPolyCourtyard()
             offset = pcbpoint.pcbpoint(mod.GetPosition()) - self.get_mod_courtyard_centre(mod)
             mod.SetPosition((center_for_polygon(points)+offset).wxpoint())
 
