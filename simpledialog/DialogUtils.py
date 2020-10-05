@@ -4,7 +4,6 @@ import wx
 import ntpath
 import pdb
 import os
-from sets import Set
 
 from ..save_config import save_config
 
@@ -15,7 +14,7 @@ from ..save_config import save_config
 class BaseDialog(wx.Dialog):
     def __init__(self, dialogname, onok=None):
         pcbnew_frame = \
-            filter(lambda w: w.GetTitle().startswith('Pcbnew'), wx.GetTopLevelWindows())[0]
+            list(filter(lambda w: w.GetTitle().startswith('Pcbnew'), wx.GetTopLevelWindows()))[0]
 
         wx.Dialog.__init__(self, pcbnew_frame,
                            id=wx.ID_ANY,
@@ -32,11 +31,11 @@ class BaseDialog(wx.Dialog):
 
         # add ok and cancel buttons.
         sizer_ok_cancel = wx.BoxSizer(wx.HORIZONTAL)
-        self.main_sizer.Add(item=sizer_ok_cancel, proportion=0, flag=wx.EXPAND)
+        self.main_sizer.Add(sizer=sizer_ok_cancel, proportion=0, flag=wx.EXPAND)
 
         ok_button = wx.Button(self, wx.ID_OK, u"OK", wx.DefaultPosition, wx.DefaultSize, 0)
         ok_button.SetDefault()
-        sizer_ok_cancel.Add(item=ok_button, proportion=1) #, flag=wx.ALL, border=5)
+        sizer_ok_cancel.Add(ok_button)#, proportion=1) #, flag=wx.ALL, border=5)
         ok_button.Bind(wx.EVT_BUTTON, self.OnOK)
 
         cancel_button = wx.Button(self, wx.ID_CANCEL, u"Cancel", wx.DefaultPosition, wx.DefaultSize, 0)
@@ -55,8 +54,8 @@ class BaseDialog(wx.Dialog):
 
     # wx.EXPAND is important for scrolled children.
     def Add(self, item, proportion=0, flag=wx.EXPAND|wx.ALL, border=0, origitem=None):
-        self.main_sizer.Insert(item=item,
-                               before=self.ok_cancel_sizer_index,
+        self.main_sizer.Insert(sizer=item,
+                               index=0,#self.ok_cancel_sizer_index,
                                flag = flag,
                                proportion=proportion,
                                border=border)
@@ -116,7 +115,7 @@ class ScrolledPicker(wx.Window):
         self.sizer.Add(self.buttonwin)
 
         if (not singleton):
-            self.value = Set()
+            self.value = set()
 
             self.selectall = wx.Button(self.buttonwin, label="select all");
             self.selectall.Bind(wx.EVT_BUTTON, self.OnSelectAllNone)
@@ -303,7 +302,7 @@ class ModulePicker(ScrolledPicker):
         ScrolledPicker.__init__(self, parent, singleton=singleton, cols=4)
 
         if (not self.singleton):
-            self.value = Set()
+            self.value = set()
 
         self.board = pcbnew.GetBoard()
         modnames = [mod.GetReference() for mod in self.board.GetModules()]

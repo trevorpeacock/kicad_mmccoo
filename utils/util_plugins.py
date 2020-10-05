@@ -3,9 +3,9 @@
 import pcbnew
 import wx
 from ..simpledialog import DialogUtils
-import groundvias
-import delaunay
-import via_fill
+from . import groundvias
+from . import delaunay
+from . import via_fill
 
 
 class GroundViasDialog(DialogUtils.BaseDialog):

@@ -5,7 +5,6 @@ import pdb
 
 import numpy as np
 import math
-from sets import Set
 
 showplot = False
 if showplot:
@@ -143,7 +142,7 @@ def LinesToPolyHoles(lines):
 
 def ViaFill(nets):
 
-    nets = Set(nets)
+    nets = set(nets)
 
     board = pcbnew.GetBoard()
 

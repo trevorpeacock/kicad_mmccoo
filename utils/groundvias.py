@@ -1,5 +1,4 @@
 import pcbnew
-from sets import Set
 
 
 def GroundVias(nets, modules):
@@ -13,11 +12,11 @@ def GroundVias(nets, modules):
     for i in range(numlayers):
         layertable[pcbnew.GetBoard().GetLayerName(i)] = i
 
-    modules = Set(modules)
+    modules = set(modules)
 
     nettable = board.GetNetsByName()
 
-    netcodes = Set()
+    netcodes = set()
     for name in nets:
         if (name in nettable):
             netcodes.add(nettable[name].GetNet())

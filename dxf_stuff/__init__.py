@@ -8,7 +8,7 @@ try:
 except ImportError as error:
 
     print("unable to import needed libraries. dxf stuff won't work.")
-    print(error.message)
+    print(error.msg)
     print("""
     # To get it to work on linux systems, you'll need something like this:
     # Make sure pip is available
@@ -24,4 +24,4 @@ except ImportError as error:
     sudo pip2 install shapely
     """)
 else:
-    import dxf_plugins
+    from . import dxf_plugins

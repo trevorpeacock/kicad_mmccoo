@@ -20,16 +20,21 @@ import pcbnew
 
 print("initializing mmccoo_kicad")
 
-import gen_border
-import dxf_stuff
-import place_by_sch
-import instantiate_footprint
-import toggle_visibility
+import os
+
+activate_this_file = os.path.join(os.path.dirname(__file__), 'venv/bin/activate_this.py')
+exec(compile(open(activate_this_file, "rb").read(), activate_this_file, 'exec'), dict(__file__=activate_this_file))
+
+from . import gen_border
+from . import dxf_stuff
+from . import place_by_sch
+from . import instantiate_footprint
+from . import toggle_visibility
 
 # I don't think it's possible to control ratsnets for individual nets.
 # It used to be possible, but not since the new connectivity algorithm.
 # import ratnest
 
-import utils
-import svg2border
+from . import utils
+from . import svg2border
 print("done adding mmccoo_kicad")

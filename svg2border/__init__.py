@@ -1,2 +1,2 @@
 
-import svg2border
+from . import svg2border

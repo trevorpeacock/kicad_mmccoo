@@ -7,7 +7,7 @@ import pdb
 import inspect
 
 import sys, os.path
-import parse_svg_path
+from . import parse_svg_path
 
 from ..simpledialog import DialogUtils
 

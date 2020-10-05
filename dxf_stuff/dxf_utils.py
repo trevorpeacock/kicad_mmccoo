@@ -1,10 +1,9 @@
 
-import bulge
+from . import bulge
 import dxfgrabber
 import numpy as np
 import pcbnew
-import pcbpoint
-from sets import Set
+from . import pcbpoint
 
 # how close together to points need to be to each other to be considered
 # connected?
@@ -227,7 +226,7 @@ class orient_actions(graphic_actions):
     def __init__(self, board, modnames, print_unhandled=False):
         graphic_actions.__init__(self, print_unhandled)
         self.board = board
-        self.modnames = Set(modnames)
+        self.modnames = set(modnames)
 
     # I only care about poly because I want directionality (which a cirle doesn't have)
     # and I want to check for enclosing (which doesn't make sense for line, arc
@@ -292,7 +291,7 @@ class myarc:
 
         self.start_point = center.polar(radius, start_angle)
         self.end_point   = center.polar(radius, end_angle)
-        self.other = Set()
+        self.other = set()
 
     def reverse(self):
         self.start_angle, self.end_angle = (self.end_angle, self.start_angle)
@@ -305,7 +304,7 @@ class myline:
     def __init__(self, start_point, end_point):
         self.start_point = pcbpoint.pcbpoint(start_point)
         self.end_point   = pcbpoint.pcbpoint(end_point)
-        self.other = Set()
+        self.other = set()
 
     def reverse(self):
         self.start_point, self.end_point = (self.end_point, self.start_point)
@@ -331,7 +330,7 @@ def remove_non_duals(e):
     # with the properly. I try to mitigate that by beginning with
     # lines that connect at only one edge first.
     others = e.other
-    e.other = Set()
+    e.other = set()
     for other in others:
         other.other.remove(e)
         remove_non_duals(other)

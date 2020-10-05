@@ -9,7 +9,6 @@ from scipy.spatial import Delaunay
 #import matplotlib.pyplot as plt
 from scipy.sparse import csr_matrix
 from scipy.sparse.csgraph import minimum_spanning_tree
-from sets import Set
 import pdb
 
 
@@ -54,8 +53,8 @@ def GenMSTRoutes(nets, mods, layername):
     board = pcbnew.GetBoard()
 
     # force that nets and mods are sets.
-    nets = Set(nets)
-    mods = Set(mods)
+    nets = set(nets)
+    mods = set(mods)
 
     # generate a name->layer table so we can lookup layer numbers by name.
     layertable = {}

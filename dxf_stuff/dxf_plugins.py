@@ -6,18 +6,18 @@ import sys
 import inspect
 import pdb
 
-import dxf_utils
+from . import dxf_utils
 from ..simpledialog import DialogUtils
 
 import os.path
 
-from dxf_utils import zone_actions
-from dxf_utils import segment_actions
-from dxf_utils import orient_actions
-from dxf_utils import mounting_actions
-from dxf_utils import traverse_dxf
-from dxf_utils import traverse_graphics
-import mounting
+from .dxf_utils import zone_actions
+from .dxf_utils import segment_actions
+from .dxf_utils import orient_actions
+from .dxf_utils import mounting_actions
+from .dxf_utils import traverse_dxf
+from .dxf_utils import traverse_graphics
+from . import mounting
 
 class DXFZoneDialog(DialogUtils.BaseDialog):
     def __init__(self):

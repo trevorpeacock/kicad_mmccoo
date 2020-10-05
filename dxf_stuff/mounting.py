@@ -5,7 +5,6 @@ import pcbnew
 import ntpath
 import pdb
 import sys, os.path, inspect
-from sets import Set
 
 from ..save_config import save_config
 from ..simpledialog import DialogUtils
